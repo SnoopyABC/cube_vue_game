@@ -1,7 +1,5 @@
 <template>
-  <button class="btn" @click="$emit('rotate')">
-    🔄 Колдуем понос
-  </button>
+  <button class="btn" @click="$emit('rotate')">🔄 Колдуем понос</button>
 </template>
 
 <script setup lang="ts">
@@ -10,12 +8,9 @@ defineEmits(['rotate'])
 
 <style scoped>
 .btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   z-index: 10;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 14px;
   background-color: #222;
   color: white;
   border: none;
