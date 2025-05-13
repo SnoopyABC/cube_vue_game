@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, defineExpose } from 'vue'
 import * as THREE from 'three'
+import catTexture from '@/assets/cat.png'
 
 const container = ref<HTMLElement | null>(null)
 let cube: THREE.Mesh
@@ -8,7 +9,13 @@ let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer
 
-onMounted(() => {
+function loadTextureAsync(url: string) {
+  return new Promise<THREE.Texture>((resolve, reject) => {
+    new THREE.TextureLoader().load(url, resolve, undefined, reject)
+  })
+}
+
+onMounted(async () => {
   scene = new THREE.Scene()
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
   camera.position.z = 5
@@ -16,13 +23,17 @@ onMounted(() => {
   renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(window.innerWidth, window.innerHeight)
 
-  // Вставляем canvas внутрь контейнера
   if (container.value) {
     container.value.appendChild(renderer.domElement)
   }
 
   const geometry = new THREE.BoxGeometry(1, 1, 1)
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+  //const loader = new THREE.TextureLoader()
+  const texture = await loadTextureAsync(catTexture)
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy()
+  const material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff })
+
+  //const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
   cube = new THREE.Mesh(geometry, material)
   cube.position.x = 0
   cube.rotation.x = Math.PI / 4

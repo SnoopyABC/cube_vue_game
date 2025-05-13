@@ -1,6 +1,6 @@
 <template>
   <button class="btn" @click="$emit('rotate')">
-    🔄 Вращение и цвет
+    🔄 Колдуем понос
   </button>
 </template>
 
