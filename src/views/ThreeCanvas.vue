@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, defineExpose } from 'vue'
+import { onMounted, onUnmounted, ref, defineExpose } from 'vue'
 import * as THREE from 'three'
 
 const container = ref<HTMLElement | null>(null)
@@ -34,12 +34,29 @@ onMounted(() => {
   scene.add(light)
 
   renderer.render(scene, camera)
+
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  // Снимаем слушатель
+  window.removeEventListener('resize', handleResize)
 })
 
 const randomColor = () => {
   return Math.floor(Math.random() * 0xffffff)
 }
 
+const handleResize = () => {
+  const width = window.innerWidth
+  const height = window.innerHeight
+
+  camera.aspect = width / height
+  camera.updateProjectionMatrix()
+
+  renderer.setSize(width, height)
+  renderer.render(scene, camera)
+}
 
 const rotateOnce = () => {
   // Устанавливаем начальные значения
@@ -69,7 +86,6 @@ const rotateOnce = () => {
 }
 
 defineExpose({ rotateOnce })
-
 </script>
 
 <template>
