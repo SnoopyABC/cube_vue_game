@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref, defineExpose, watch } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import computerTexture from '@/assets/SimpleComputer.glb'
+import computerTexture from '@/assets/MagicCat.glb'
 
 const container = ref<HTMLElement | null>(null)
 let isAnimated = ref(true)
@@ -31,7 +31,7 @@ onMounted(async () => {
   )
 
   model = gltf.scene
-  model.scale.set(1, 1, 1)
+  model.scale.set(0.5, 0.5, 0.5)
   model.position.set(0, 0, 0)
   model.rotation.y = 0
   scene.add(model)
