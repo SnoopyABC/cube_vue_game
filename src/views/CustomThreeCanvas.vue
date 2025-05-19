@@ -2,14 +2,16 @@
 import { onMounted, onUnmounted, ref, defineExpose, watch } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import computerTexture from '@/assets/MagicCat.glb'
 
 const container = ref<HTMLElement | null>(null)
-let isAnimated = ref(true)
+const isAnimated = ref(false)
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer
 let model: THREE.Object3D
+let controls: OrbitControls
 
 const clock = new THREE.Clock()
 
@@ -33,8 +35,14 @@ onMounted(async () => {
   model = gltf.scene
   model.scale.set(0.5, 0.5, 0.5)
   model.position.set(0, 0, 0)
-  model.rotation.y = 0
+  model.rotation.y = -45
   scene.add(model)
+
+  controls = new OrbitControls(camera, renderer.domElement)
+  controls.target.set(0, 0.5, 0)
+  controls.update()
+  controls.enablePan = false
+  controls.enableDamping = true
 
   const ambient = new THREE.AmbientLight(0xffffff, 0.4)
   const point = new THREE.PointLight(0xffffff, 0.8)
@@ -44,12 +52,21 @@ onMounted(async () => {
   window.addEventListener('resize', handleResize)
 
   rotateAnimation()
+
+  renderer.render(scene, camera)
 })
 
-const rotateAnimation = () => {
+const animate = () => {
+  requestAnimationFrame(animate)
+  controls.update()
+  renderer.render(scene, camera)
+}
 
-  if (!isAnimated.value){
-    return;
+const rotateAnimation = () => {
+  if (!isAnimated.value) {
+    animate()
+
+    return
   }
 
   requestAnimationFrame(rotateAnimation)
@@ -65,18 +82,17 @@ const rotateAnimation = () => {
 
 watch(isAnimated, () => {
   if (isAnimated.value) {
-    rotateAnimation();
+    rotateAnimation()
   }
 })
 
 const toggleRotateAnimation = () => {
-  isAnimated.value = !isAnimated.value;
+  isAnimated.value = !isAnimated.value
 }
 
 function rotateOnce() {
-
   if (model) {
-    model.rotation.y += 0.5;
+    model.rotation.y += 0.5
   }
 
   renderer.render(scene, camera)
