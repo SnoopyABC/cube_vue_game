@@ -39,7 +39,7 @@ onMounted(async () => {
   scene.add(model)
 
   controls = new OrbitControls(camera, renderer.domElement)
-  controls.target.set(0, 0.5, 0)
+  controls.target.set(0, 0.0, 0)
   controls.update()
   controls.enablePan = false
   controls.enableDamping = true
